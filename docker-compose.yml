@@ -6,6 +6,8 @@ services:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
@@ -26,6 +28,7 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - DB_HOST=db
     depends_on:
       - db
   frontend:

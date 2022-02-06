@@ -10,10 +10,9 @@ import Navbar from './Navbar'
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export const navLinks = [
-    { title: `home`, path: `/` },
-    { title: `sign up`, path: `/sign-up` },
+    { title: `products`, path: `/products` },
     { title: `log in`, path: `/log-in` },
-    { title: `movies`, path: `/movies` }
+    { title: `sign up`, path: `/sign-up` },
 ];
 
 const Header = () => {

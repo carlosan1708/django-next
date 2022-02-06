@@ -6,3 +6,4 @@ djangorestframework-simplejwt==4.6.0
 pytz==2021.1
 sqlparse==0.4.1
 psycopg2-binary
+django-cors-headers

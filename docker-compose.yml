@@ -1,0 +1,41 @@
+#Based on https://docs.docker.com/samples/django/
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  backend-api:
+    restart: always
+    build: 
+      context: ./backend
+      dockerfile: backend-dockerfile
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/backend
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+  frontend:
+    restart: always
+    build: 
+      context: ./frontend
+      dockerfile: frontend-dockerfile
+    volumes:
+      - .:/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-api

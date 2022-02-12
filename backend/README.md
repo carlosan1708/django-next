@@ -47,6 +47,13 @@ You can install httpie using pip:
 pip install httpie
 ```
 
+```
+Create migrations: python manage.py makemigrations
+
+```
+Apply migrations: python manage.py migrate
+```
+
 First, we have to start up Django's development server.
 ```
 python manage.py runserver
@@ -152,3 +159,16 @@ http http://127.0.0.1:8000/api/v1/products/?title="AntMan"&year=2020 "Authorizat
 http http://127.0.0.1:8000/api/v1/products/?year__gt=2019&year__lt=2022&genre="Action" "Authorization: Bearer {YOUR_TOKEN}"
 ```
 
+```
+For Admin
+Insert user directly in DB as staff_true true
+
+Example
+INSERT INTO public.auth_user(is_superuser, password, username, first_name, last_name, email, is_staff, is_active, date_joined)
+	VALUES ('false', 'pbkdf2_sha256$216000$V6DhitINALz7$e8SoZ2CWPwDg2FLkCBA8R/aerray9b4lVwaqyn/nuNg=',
+             'a354847', 'Carlos', 'Rodriguez', 'carlos@gmail.com', 'true', 'true', now());
+
+Username: a354847
+Password: fas3+35-1*4Ga
+
+```

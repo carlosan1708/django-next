@@ -1,12 +1,5 @@
 from django.db import models
 
-
-class IngredientHistory(models.Model):
-    year = models.IntegerField()
-    total = models.IntegerField()
-    class Meta:
-        managed = False
-
 class Product(models.Model):
     title = models.CharField(max_length=100)
     year = models.IntegerField()

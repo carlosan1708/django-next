@@ -1,15 +1,8 @@
 from rest_framework import serializers
 from .models import Product
 from .models import Ingredient
-from .models import IngredientHistory
-
 
 from django.contrib.auth.models import User
-
-class IngredientSumSerializer(serializers.ModelSerializer):
-     class Meta:
-        model = IngredientHistory
-        fields = [ 'year', 'total']
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:

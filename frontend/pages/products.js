@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import service from '../axios/service'
-import Router from 'next/router'
+
 import { DataGrid } from '@mui/x-data-grid';
-import { Grid, Container, Button, Typography } from '@mui/material';
-import AddProduct from '../components/product/AddProduct'
+import { Grid, Container, Typography } from '@mui/material';
+import AddProductDialog from '../components/product/AddProductDialog'
 import dynamic from 'next/dynamic'
+import ProductPageLogic from './logic/ProductPageLogic'
 
 const DynamicComponentWithNoSSR = dynamic(
   () => import('../components/product/ChartHistory'),
@@ -12,53 +11,7 @@ const DynamicComponentWithNoSSR = dynamic(
 )
 
 const ProductsPage = () => {
-
-  const [formulaData, setProductData] = useState([])
-  const [ingredientHistory, setIngredientHistory] = useState([])
-
-  const [refresh, setRefresh] = useState([])
-  const refreshParent = () => {
-    setRefresh(!refresh);
-  }
-  useEffect(() => {
-    service
-      .get('http://127.0.0.1:8000/api/v1/products/')
-      .then(response => {
-        setProductData(response.data.results)
-      }).catch(function (error) {
-        alert("Please log in again")
-        Router.push('/log-in')
-      })
-  }, [refresh]);
-
-  useEffect(() => {
-    const chartData = []
-    service
-      .get('http://127.0.0.1:8000/api/v1/products/ingredients/')
-      .then(response => {
-        let counter = 0;
-        for (const object of response.data) {
-          chartData.push({ 'x': object[0], 'y': object[1] })
-          counter++
-        }
-        const chartDict = [{ id: 1, data: chartData }]
-        setIngredientHistory(chartDict)
-        console.log(chartDict)
-      }).catch(function (error) {
-        console.log(error)
-      })
-  }, [refresh]);
-
-  const renderIfValue = (value) => {
-    if (value.length > 0) {
-      var names = value.map(function (item) {
-        return item['title'] + ":" + item['quantity'] + " // ";
-      });
-      return (<Typography variant="subtitle2">
-        {names}
-      </Typography>)
-    }
-  }
+  const { ingredientHistory, formulaData, displayChart, refreshParent, renderIfValue } = ProductPageLogic()
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
@@ -85,12 +38,14 @@ const ProductsPage = () => {
   return (
     <Container>
       <Grid container>
+        {displayChart && <>
         <Grid item xs={12} style={{ marginTop: '3rem' }}>
           <Typography variant="h4">Ingredient Quantity over Time</Typography>
         </Grid>
         <Grid item xs={12}>
           <DynamicComponentWithNoSSR ingredientHistory={ingredientHistory} />
-        </Grid>
+        </Grid></>
+        }
         <Grid item xs={12} style={{ marginTop: '3rem' }}>
           <Typography variant="h4">Product History</Typography>
         </Grid>
@@ -104,7 +59,7 @@ const ProductsPage = () => {
             disableSelectionOnClick
           /></div></Grid>
         <Grid item xs={10}>
-          <AddProduct refreshParent={refreshParent} />
+          <AddProductDialog refreshParent={refreshParent} />
         </Grid>
       </Grid>
 

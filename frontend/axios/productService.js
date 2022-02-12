@@ -4,11 +4,23 @@ const service = axios.create({
 });
 
 // request interceptor
-const getToken = () =>{
+const getToken = () => {
     const token = localStorage.getItem('token');
-    console.log(token)
     return token;
 }
+
+const getProducts = () => {
+    return service.get('http://127.0.0.1:8000/api/v1/products/')
+}
+
+const createProduct = (payload) => {
+    return service.post('http://127.0.0.1:8000/api/v1/products/', payload)
+}
+
+const getProductIngredientsSum = () => {
+    return service.get('http://127.0.0.1:8000/api/v1/products/ingredients/')
+}
+
 service.interceptors.request.use(
     config => {
         // Do something before request is sent
@@ -20,4 +32,6 @@ service.interceptors.request.use(
     }
 );
 
-export default service;
+export default {
+    getProducts, createProduct, getProductIngredientsSum
+}

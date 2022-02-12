@@ -1,20 +1,30 @@
-import { useState, useRef } from 'react';
 import { Typography, Grid, Button, Modal, TextField, Box } from '@mui/material';
-import service from '../../axios/service'
 import { DataGrid } from '@mui/x-data-grid';
+import AddProductDialogLogic from './AddProductDialogLogic'
+import useFocus from '../../customHook/useFocus'
 
-const AddProduct = (props) => {
-    const { refreshParent } = props;
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const [title, setTitle] = useState("");
-    const [year, setYear] = useState("");
-    const [ingredients, setIngredients] = useState([]);
-    const [currentIngredientName, setCurrentIngredientName] = useState("");
-    const [currentIngredientQuantity, setCurrentIngredientQuantity] = useState();
+//It will have been nice with Typescript :), but there is no much props been passed or time.  
+const AddProductDialog = (props) => {
+    const { addIngredients, handleSubmit,
+        handleOpen, setTitle, setYear,
+        open, handleClose, currentIngredientName,
+        currentIngredientQuantity, ingredients,
+        setCurrentIngredientName, setCurrentIngredientQuantity,
+    } = AddProductDialogLogic(props)
 
-    let counterId = useRef(0)
+    const [inputRef, setInputFocus] = useFocus()
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
@@ -28,38 +38,6 @@ const AddProduct = (props) => {
         },
     ];
 
-    const handleSubmit = () => {
-        service
-            .post('http://127.0.0.1:8000/api/v1/products/', {
-                title: title,
-                year: year,
-                ingredients: ingredients
-            })
-            .then(response => {
-                handleClose()
-                refreshParent()
-            });
-    }
-
-    const addIngredients = () => {
-        counterId.current++;
-        setIngredients(prevState => [...prevState, { "id": counterId.current, "title": currentIngredientName, "quantity": currentIngredientQuantity }])
-        setCurrentIngredientName("")
-        setCurrentIngredientQuantity("")
-    }
-
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
-
     return (
         <div>
             <Button onClick={handleOpen} variant="contained">Add Product</Button>
@@ -71,8 +49,8 @@ const AddProduct = (props) => {
             >
                 <Box sx={style}>
                     <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <Grid container >
+                        <Grid item xs={12}>
+                            <Grid container  spacing={2} >
                                 <Grid item xs={12}><Typography variant="h3">Product</Typography></Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -93,11 +71,12 @@ const AddProduct = (props) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={4}>
-                            <Grid container >
+                        <Grid item xs={6}>
+                            <Grid container   spacing={2}>
                                 <Grid item xs={12}><Typography variant="h3">Ingredient</Typography></Grid>
                                 <Grid item xs={12}>
                                     <TextField
+                                        inputRef={inputRef}
                                         required
                                         id="ingredientName"
                                         label="Ingredient Name"
@@ -113,6 +92,12 @@ const AddProduct = (props) => {
                                         value={currentIngredientQuantity}
                                         type="number"
                                         onChange={event => setCurrentIngredientQuantity(event.target.value)}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                addIngredients();
+                                                setInputFocus();
+                                            }
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -120,7 +105,7 @@ const AddProduct = (props) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12}>
                             <Grid item xs={12}>
                                 <div style={{ height: 300, width: '100%' }}><DataGrid
                                     rows={ingredients}
@@ -142,4 +127,4 @@ const AddProduct = (props) => {
     );
 };
 
-export default AddProduct;
+export default AddProductDialog;

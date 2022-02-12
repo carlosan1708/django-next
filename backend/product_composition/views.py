@@ -1,18 +1,16 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListAPIView, ListCreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 from .models import Product
-from .models import IngredientHistory
-from .serializers import IngredientSerializer
-from .serializers import IngredientSumSerializer
-from django.core import serializers
-
 from .permissions import IsOwnerOrReadOnly
 from .serializers import ProductSerializer
 from .pagination import CustomPagination
 from .filters import ProductFilter
 from django.http import HttpResponse
 import json
+
+from rest_framework.decorators import api_view, permission_classes
 
 from django.db import connection
 
@@ -33,17 +31,21 @@ class RetrieveUpdateDestroyProductAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
-def get_ingredient_quantity_summary(param):
-    from django.db import connection
-    cursor = connection.cursor()
+class CustomView(APIView ):
+    @api_view(['GET'])
+    @permission_classes([IsAuthenticated, IsAdminUser])
+    def get_ingredient_quantity_summary(request):
 
-    # Data modifying operation - commit required
-    cursor.execute("Select p.year, SUM (quantity) from product_composition_product p inner join product_composition_ingredient i on i.id = p.id group by year")
-   
-    row = cursor.fetchall()
-    print(row)
+        from django.db import connection
+        cursor = connection.cursor()
+
+        # Data modifying operation - commit required
+        cursor.execute("Select p.year, SUM (quantity) from product_composition_product p inner join product_composition_ingredient i on i.id = p.id group by year")
     
-    return HttpResponse(json.dumps(row))
+        row = cursor.fetchall()
+        print(row)
+        
+        return HttpResponse(json.dumps(row))
 
 
 

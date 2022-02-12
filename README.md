@@ -1,5 +1,7 @@
 # django-next
-Django-CRUD with Next JS Frontend (WIP)
+Django-CRUD with Next JS Frontend
+
+The following code was made in less than a day. It's a fast development that compresses a lot of features and tries to balance best practices, so there will be comments about potential improvements.
 
 This is using https://github.com/juanbenitezdev/django-rest-framework-crud as base and following this tutorial for Next Js.
 
@@ -10,3 +12,5 @@ It has been customized to change the business topic and create adoptions to enab
 Usage: 
 
 docker-compose up
+
+Internal README for each backend and frontend are available.

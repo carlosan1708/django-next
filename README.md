@@ -1,6 +1,11 @@
 # django-next
 Django-CRUD with Next JS Frontend
 
+TODO:
+- Pass roles and adjust UI screens accordingly
+- Include refresh token or similar flow since token expires quite fast. 
+- Some overall UI improvements on the table to treat the ingredients better. 
+
 The following code was made in less than a day. It's a fast development that compresses a lot of features and tries to balance best practices, so there will be comments about potential improvements.
 
 This is using https://github.com/juanbenitezdev/django-rest-framework-crud as base and following this tutorial for Next Js.
